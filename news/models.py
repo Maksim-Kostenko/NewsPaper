@@ -42,6 +42,11 @@ class Category(models.Model):
     #
     # name_category = models.CharField(unique=True, choices=CATEGORY_CHOICES)
 
+    name_category = models.CharField(max_length=50, unique=True)
+
+
+class Post(models.Model):
+
     ARTICLE = 'AR'
     NEWS = 'NW'
 
@@ -50,16 +55,13 @@ class Category(models.Model):
         (NEWS, 'Новость')
     ]
 
-    name_category = models.CharField(max_length=50, unique=True)
-    type_post = models.CharField(choices=POST_TYPES, default=ARTICLE)
-
-class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     category = models.ManyToManyField(Category, through='PostCategory')
     title = models.CharField(max_length=255, null=False)
     content = models.TextField(max_length=1000)
     rating = models.IntegerField(default=0)
+    type_post = models.CharField(choices=POST_TYPES, default=ARTICLE)
 
     def like(self):
         self.rating += 1
