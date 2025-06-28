@@ -10,6 +10,7 @@ from news.models import Post
 #todo: 4. По ссылке /news/<id новости> должна выводиться детальная информация о новости.
 #todo: 5. Заголовок, дата публикации в формате день.месяц.год и полный текст статьи.
 
+
 class NewsList(ListView):
     model = Post
     template_name = 'news_list.html'
