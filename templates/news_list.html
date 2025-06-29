@@ -1,12 +1,16 @@
 {% extends 'flatpages/default.html' %}
 
 {% block title %}
-	Список новостей
+    Список новостей
     <hr>
 {% endblock title %}
 
 {% block content %}
+    <h1>Список новостей</h1>
+        <hr>
     {% if news %}
+            <h3>{{ news|length }} новости</h3>
+                <hr>
 	    <table class="table table-striped">
         <tr>
             <td>Заголовок</td>
@@ -16,8 +20,8 @@
             {% for new in news %}
         <tr>
             <td>{{ new.title }}</td>
-            <td>{{ new.date_created }}</td>
-            <td>{{ new.content }}</td>
+            <td>{{ new.date_created|date:"d.m.Y" }}</td>
+            <td>{{ new.content|truncatewords:20 }}</td>
         </tr>
         {% endfor %}
         </table>

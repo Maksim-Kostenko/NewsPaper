@@ -5,6 +5,20 @@
 {% endblock title %}
 
 {% block content %}
-    <h1>{{ post.title }}</h1>
-	<p>{{ post.content }}</p>
+{#    <h1>{{ post.title }}</h1>#}
+{#	<p>{{ post.content }}</p>#}
+    <table class="table table-striped">
+        <tr>
+            <td>Заголовок</td>
+            <td>{{ post.title }}</td>
+        </tr>
+        <tr>
+            <td>Дата публикации</td>
+            <td>{{ post.date_created|date:"d.m.Y" }}</td>
+        </tr>
+        <tr>
+            <td>Содержание</td>
+            <td>{{ post.content }}</td>
+        </tr>
+        </table>
 {% endblock content %}
