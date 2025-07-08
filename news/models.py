@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
+from django.urls import reverse
 
 
 # Create your models here.
@@ -76,6 +77,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.title.title()}: {self.content[:25]}"
+
+    def get_absolute_url(self):
+        return reverse('news_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):
