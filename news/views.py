@@ -47,9 +47,14 @@ class NewsUpdate(UpdateView):
     template_name = 'news_edit.html'
 
     def form_valid(self, form):
+        """Реализовано принудительное изменение типа поста,
+        независимо от того что выберет редактор"""
         news = form.save(commit=False)
         news.type_post = Post.NEWS
         return super().form_valid(form)
+
+    def get_queryset(self):
+        return Post.objects.filter(type_post=Post.NEWS)
 
 class NewsDelete(DeleteView):
     model = Post
@@ -80,6 +85,9 @@ class ArticleUpdate(UpdateView):
         news = form.save(commit=False)
         news.type_post = Post.ARTICLE
         return super().form_valid(form)
+
+    def get_queryset(self):
+        return Post.objects.filter(type_post=Post.ARTICLE)
 
 
 class ArticleDelete(DeleteView):

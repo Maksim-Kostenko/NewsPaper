@@ -19,5 +19,9 @@
             <td>Содержание</td>
             <td>{{ post.content|censor }}</td>
         </tr>
+        <tr>
+            <td>Тип поста</td>
+            <td>{{ post.get_type_post_display }}</td>
+        </tr>
         </table>
 {% endblock content %}
