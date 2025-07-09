@@ -34,7 +34,7 @@ class NewsDetail(DetailView):
 class NewsCreate(CreateView):
     form_class = PostFrom
     model = Post
-    template_name = 'news_edit.html'
+    template_name = 'post_edit.html'
 
     def form_valid(self, form):
         news = form.save(commit=False)
@@ -44,7 +44,7 @@ class NewsCreate(CreateView):
 class NewsUpdate(UpdateView):
     form_class = PostFrom
     model = Post
-    template_name = 'news_edit.html'
+    template_name = 'post_edit.html'
 
     def form_valid(self, form):
         """Реализовано принудительное изменение типа поста,
@@ -58,7 +58,7 @@ class NewsUpdate(UpdateView):
 
 class NewsDelete(DeleteView):
     model = Post
-    template_name = 'news_delete.html'
+    template_name = 'post_delete.html'
     success_url = reverse_lazy('news_list')
 
     def get_queryset(self):
@@ -68,7 +68,7 @@ class NewsDelete(DeleteView):
 class ArticleCreate(CreateView):
     form_class = PostFrom
     model = Post
-    template_name = 'news_edit.html'
+    template_name = 'post_edit.html'
 
     def form_valid(self, form):
         news = form.save(commit=False)
@@ -79,7 +79,7 @@ class ArticleCreate(CreateView):
 class ArticleUpdate(UpdateView):
     form_class = PostFrom
     model = Post
-    template_name = 'news_edit.html'
+    template_name = 'post_edit.html'
 
     def form_valid(self, form):
         news = form.save(commit=False)
@@ -92,7 +92,7 @@ class ArticleUpdate(UpdateView):
 
 class ArticleDelete(DeleteView):
     model = Post
-    template_name = 'news_delete.html'
+    template_name = 'post_delete.html'
     success_url = reverse_lazy('news_list')
 
     def get_queryset(self):
@@ -111,7 +111,7 @@ class ArticleDelete(DeleteView):
         #   return super().form_valid(form)
 # class NewsDelete(DeleteView):
 #     model = Post
-#     template_name = 'news_delete.html'
+#     template_name = 'post_delete.html'
 #     success_url = reverse_lazy('news_list')
 #
 #     def get_queryset(self):

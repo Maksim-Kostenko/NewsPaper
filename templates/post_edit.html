@@ -1,7 +1,12 @@
 {% extends 'flatpages/default.html' %}
 
 {% block content %}
-	<h1>Публикация</h1>
+	
+    {% if post.type_post == 'NW' %}
+    	<h1>Новость</h1>
+        {% else %}
+        <h1>Статья</h1>
+    {% endif %}
     <hr>
     <form action="" method="post">
     {% csrf_token %}
