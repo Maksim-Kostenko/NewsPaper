@@ -6,7 +6,7 @@ from news.models import Post
 class NewsFilter(FilterSet):
     date_created = DateFilter(
         field_name='date_created',  # имя поля в модели
-        lookup_expr='date',
+        lookup_expr='gte',
         widget=forms.DateInput(attrs={'type': 'date'}),
         label='Выберите дату',
     )
