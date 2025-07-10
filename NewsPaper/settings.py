@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'news',
     'accounts',
-    # 'django.contrib.flatpages',
     'django.contrib.sites',
+
+    'debug_toolbar'
 ]
 
 SITE_ID = 1
@@ -53,7 +54,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
 ]
 
 ROOT_URLCONF = 'NewsPaper.urls'

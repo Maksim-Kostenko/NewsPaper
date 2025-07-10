@@ -8,7 +8,7 @@ class NewsFilter(FilterSet):
         field_name='date_created',  # имя поля в модели
         lookup_expr='date',
         widget=forms.DateInput(attrs={'type': 'date'}),
-        label='Выберите дату'
+        label='Выберите дату',
     )
 
     class Meta:
