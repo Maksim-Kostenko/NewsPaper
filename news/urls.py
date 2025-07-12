@@ -2,9 +2,11 @@
 from django.urls import path, reverse
 
 
-from news.views import NewsList, NewsDetail, PostCreated, PostDelete, PostUpdate
+from news.views import NewsList, NewsDetail, PostCreated, PostDelete, PostUpdate, NewsListSearch
+
 urlpatterns = [
     path('', NewsList.as_view(), name='news_list'),
+    path('search/', NewsListSearch.as_view(), name='news_list_search'),
     path('<int:pk>/', NewsDetail.as_view(), name='news_detail'),
 
     #Новости
