@@ -1,4 +1,4 @@
-from django_filters import FilterSet, DateFilter, DateFromToRangeFilter
+from django_filters import FilterSet, DateFilter
 from django import forms
 
 from news.models import Post

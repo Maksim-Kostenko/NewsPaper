@@ -24,12 +24,14 @@ class NewsListSearch(ListView):
     paginate_by = 5
 
     def get_queryset(self):
+        """Вывод только отфильтрованных товаров"""
         queryset = super().get_queryset()
         self.filterset = NewsFilter(self.request.GET, queryset)
         # Возвращаем из функции отфильтрованный список товаров
         return self.filterset.qs
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        """Вывод настроенных фильтров"""
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         return context
