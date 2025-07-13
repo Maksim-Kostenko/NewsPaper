@@ -22,6 +22,7 @@ urlpatterns = [
     path('news/', include('news.urls')),
     path('accounts/', include('allauth.urls')),
     path('sign/', include('sign.urls')),
+    path('', include('protect.urls')),
 ]
 
 from django.conf import settings

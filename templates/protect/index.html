@@ -1,0 +1,13 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+	Защищенная страница для проверки авторизации пользователя
+{% endblock title%}
+
+{% block content %}
+    <h1>Страница авторизованного пользователя {{ request.user.username }}</h1>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Выйти</button>
+        </form>
+{% endblock content %}
