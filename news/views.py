@@ -1,6 +1,6 @@
-from django.template.context_processors import request
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from news.forms import PostFrom
 from news.models import Post
@@ -60,10 +60,11 @@ class PostCreated(CreateView, TypePostMixin):
         post.type_post = self.get_post_type()
         return super().form_valid(form)
 
-class PostUpdate(UpdateView, TypePostMixin):
+class PostUpdate(LoginRequiredMixin, UpdateView, TypePostMixin):
     form_class = PostFrom
     model = Post
     template_name = 'post_edit.html'
+    login_url = 'news_list'
 
     def form_valid(self, form):
         post = form.save(commit=False)
