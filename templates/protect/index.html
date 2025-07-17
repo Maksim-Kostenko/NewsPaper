@@ -6,8 +6,15 @@
 
 {% block content %}
     <h1>Страница авторизованного пользователя {{ request.user.username }}</h1>
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Выйти</button>
-        </form>
+    {% if is_not_author %}
+    <form action="{% url 'upgrade_author' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Хочу стать автором!</button>
+    </form>
+    {% endif %}
+    <h1> </h1>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Выйти</button>
+    </form>
 {% endblock content %}

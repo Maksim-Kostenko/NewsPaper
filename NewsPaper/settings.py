@@ -93,15 +93,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'NewsPaper.wsgi.application'
 
+AUTH_USER_MODEL = 'auth.User'
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    #с подтверждением электронной почты
+    # 'allauth.account.auth_backends.AuthenticationBackend',
 
 ]
 
 ACCOUNT_LOGIN_METHODS = ['email']  # вход только по email
-ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']  # регистрация без username
-
+ACCOUNT_SIGNUP_FIELDS = ['email','password1','password2']  # регистрация без username
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_FORMS = {'signup': 'sign.forms.BasicSignupForm'}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
