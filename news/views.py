@@ -50,7 +50,7 @@ class TypePostMixin:
         else:
             return Post.NEWS
 
-class PostCreated(CreateView, TypePostMixin):
+class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
     form_class = PostFrom
     model = Post
     template_name = 'post_edit.html'
@@ -74,7 +74,7 @@ class PostUpdate(LoginRequiredMixin, UpdateView, TypePostMixin):
     def get_queryset(self):
         return Post.objects.filter(type_post=self.get_post_type())
 
-class PostDelete(DeleteView, TypePostMixin):
+class PostDelete(LoginRequiredMixin, DeleteView, TypePostMixin):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('news_list')

@@ -46,13 +46,14 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.yandex',
 
     'debug_toolbar',
 ]
 
 SITE_ID = 1
 
-LOGIN_URL = '/sign/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
@@ -106,6 +107,7 @@ ACCOUNT_LOGIN_METHODS = ['email']  # вход только по email
 ACCOUNT_SIGNUP_FIELDS = ['email','password1','password2']  # регистрация без username
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_FORMS = {'signup': 'sign.forms.BasicSignupForm'}
+SOCIAL_AUTH_YANDEX_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/accounts/yandex/login/callback/'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
