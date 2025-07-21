@@ -1,8 +1,8 @@
 
-from django.urls import path, reverse
+from django.urls import path
 
 
-from news.views import NewsList, NewsDetail, PostCreated, PostDelete, PostUpdate, NewsListSearch
+from news.views import NewsList, NewsDetail, PostCreated, PostDelete, PostUpdate, NewsListSearch, CategorySubscribe
 
 urlpatterns = [
     path('', NewsList.as_view(), name='news_list'),
@@ -17,5 +17,7 @@ urlpatterns = [
     #Статьи
     path('article/create/', PostCreated.as_view(), name='article_create'),
     path('article/<int:pk>/update/', PostUpdate.as_view(), name='article_update'),
-    path('article/<int:pk>/delete', PostDelete.as_view(), name='article_delete')
+    path('article/<int:pk>/delete', PostDelete.as_view(), name='article_delete'),
+
+    path('subscribe/', CategorySubscribe.as_view(), name = 'category_subscribe')
 ]

@@ -1,9 +1,10 @@
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from news.forms import PostFrom
-from news.models import Post, UserSubscribes
+
+from news.forms import PostFrom, SubscribeForm
+from news.models import Post, UserSubscribes, Category
 from news.filters import NewsFilter
 
 
@@ -41,21 +42,6 @@ class NewsDetail(DetailView):
     template_name = 'news.html'
     context_object_name = 'post'
 
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        post = self.object
-
-        if self.request.user.is_authenticated():
-            post_categories = self.object.category.all()
-            user_subscriptions = UserSubscribes.objects.filter(
-                user=self.request.user,
-                category__in=post_categories
-            ).values_list('category_id', flat=True)
-            context[is_not_subscribed] = not user_subscriptions.exists()
-        else:
-            context[is_not_subscribed] = True
-        return context
 
 
 class TypePostMixin:
@@ -99,3 +85,27 @@ class PostDelete(LoginRequiredMixin, DeleteView, TypePostMixin):
     def get_queryset(self):
         return Post.objects.filter(type_post=self.get_post_type())
 
+class CategorySubscribe(LoginRequiredMixin, FormView):
+    form_class = SubscribeForm
+    model = Category
+    template_name = 'category_subscribe.html'
+    context_object_name = 'category'
+    success_url = reverse_lazy('news_list')
+
+    def get_form_kwargs(self):
+        """Передаем пользователя в форму"""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        # Удаляем старые подписки пользователя
+        UserSubscribes.objects.filter(user=self.request.user).delete()
+
+        # Добавляем новые подписки
+        for category in form.cleaned_data['categories']:
+            UserSubscribes.objects.create(
+                user=self.request.user,
+                category=category
+            )
+        return super().form_valid(form)
