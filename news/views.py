@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from news.forms import PostFrom
-from news.models import Post
+from news.models import Post, UserSubscribes
 from news.filters import NewsFilter
 
 
@@ -40,6 +40,23 @@ class NewsDetail(DetailView):
     model = Post
     template_name = 'news.html'
     context_object_name = 'post'
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        post = self.object
+
+        if self.request.user.is_authenticated():
+            post_categories = self.object.category.all()
+            user_subscriptions = UserSubscribes.objects.filter(
+                user=self.request.user,
+                category__in=post_categories
+            ).values_list('category_id', flat=True)
+            context[is_not_subscribed] = not user_subscriptions.exists()
+        else:
+            context[is_not_subscribed] = True
+        return context
+
 
 class TypePostMixin:
     """Определение типа поста"""

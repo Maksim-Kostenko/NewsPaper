@@ -6,6 +6,8 @@ from django.urls import reverse
 
 # Create your models here.
 class Author(models.Model):
+    """Модель автора"""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
@@ -20,39 +22,19 @@ class Author(models.Model):
     def __str__(self):
         return f"{self.user.username}"
 
+
 class Category(models.Model):
-    # CATEGORY_CHOICES = [
-    #     ('POL', 'Политика'),
-    #     ('ECO', 'Экономика'),
-    #     ('SOC', 'Общество'),
-    #     ('TEC', 'Технологии'),
-    #     ('SCI', 'Наука'),
-    #     ('HEA', 'Здоровье'),
-    #     ('EDU', 'Образование'),
-    #     ('CUL', 'Культура'),
-    #     ('SPO', 'Спорт'),
-    #     ('INC', 'Происшествия'),
-    #     ('AUT', 'Авто'),
-    #     ('REA', 'Недвижимость'),
-    #     ('TOU', 'Туризм'),
-    #     ('ENT', 'Развлечения'),
-    #     ('FAS', 'Мода'),
-    #     ('FOO', 'Еда'),
-    #     ('ECL', 'Экология'),
-    #     ('HIS', 'История'),
-    #     ('REL', 'Религия'),
-    #     ('OTH', 'Другое')
-    # ]
-    #
-    # name_category = models.CharField(unique=True, choices=CATEGORY_CHOICES)
+    """Модель категорий"""
 
     name_category = models.CharField(max_length=50, unique=True)
+    subscribes = models.ManyToManyField(User, through="UserSubscribes")
 
     def __str__(self):
         return f"{self.name_category}"
 
 
 class Post(models.Model):
+    """Модель поста"""
 
     ARTICLE = 'AR'
     NEWS = 'NW'
@@ -88,11 +70,19 @@ class Post(models.Model):
         return reverse('news_detail', args=[str(self.id)])
 
 
+class UserSubscribes(models.Model):
+    """Связь между юзером и категорией (для подписки)"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+
 class PostCategory(models.Model):
+    """Связь моделей поста и категории"""
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 class Comment(models.Model):
+    """Модель комментариев"""
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(max_length=1000)

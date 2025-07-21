@@ -23,6 +23,12 @@
             <td>Тип поста</td>
             <td>{{ post.get_type_post_display }}</td>
         </tr>
-
     </table>
+    <hr>
+{% if is_not_subscribed %}
+    <form method="post" action="{% url 'category_subscribe' category.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Подписаться на новости категории</button>
+    </form>
+{% endif %}
 {% endblock content %}
