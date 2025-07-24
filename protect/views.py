@@ -4,6 +4,8 @@ from django.contrib.auth.models import Group
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
+from news.models import Author
+
 
 # Create your views here.
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -20,4 +22,9 @@ def upgrade_author(request):
     premium_group = Group.objects.get(name='author')
     if not request.user.groups.filter(name='author').exists():
         premium_group.user_set.add(user)
+        if not Author.objects.filter(user=user).exists():
+            Author.objects.create(user=user)
+        else:
+            print('Что то пошло не так при добавлении пользователя в БД Авторов')
+            #Сделать логирование
     return redirect('/')

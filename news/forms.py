@@ -6,7 +6,7 @@ from news.models import Post, Category
 class PostFrom(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'type_post', 'author', 'category']
+        fields = ['title', 'content', 'category']
 
 class SubscribeForm(forms.Form):
     def __init__(self, *args, **kwargs):

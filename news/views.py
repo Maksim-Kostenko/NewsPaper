@@ -1,3 +1,5 @@
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -28,7 +30,6 @@ class NewsListSearch(ListView):
         """Вывод только отфильтрованных товаров"""
         queryset = super().get_queryset()
         self.filterset = NewsFilter(self.request.GET, queryset)
-        # Возвращаем из функции отфильтрованный список товаров
         return self.filterset.qs
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -60,8 +61,63 @@ class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
 
     def form_valid(self, form):
         post = form.save(commit=False)
+        post.author = self.request.user.author
         post.type_post = self.get_post_type()
+        post.content = post.content
+        post.save()
+        form.save_m2m()
+        post_categories = post.category.all()
+
+        for category in post_categories:
+            subscribers = UserSubscribes.objects.filter(
+                category=category
+            ).select_related('user')
+
+            for subscription in subscribers:
+                self.send_notification_email(
+                    user=subscription.user,
+                    post=post,
+                    category=category
+                )
+
         return super().form_valid(form)
+
+
+    def send_notification_email(self, user, post, category):
+
+        subject = f'Новая новость в категории "{category.name_category}"'
+
+        # Добавляем plain-text версию
+        text_content = f"""
+        Здравствуйте, {user.username}!
+
+        Новая новость в категории "{category.name_category}":
+        {post.title}
+
+        {post.content[:50]}...
+
+        Читать полностью: {post.get_absolute_url()}
+        """
+
+        html_content = render_to_string(
+            'new_post_notification.html',
+            {
+                'user': user,
+                'post': post,
+                'content': post.content[:50],
+                'category': category,
+                'site_name': 'Ваш сайт'
+            }
+        )
+
+        msg = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email='totsamisamiy@yandex.ru',
+            to=[user.email],
+        )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send(fail_silently=False)
 
 class PostUpdate(LoginRequiredMixin, UpdateView, TypePostMixin):
     form_class = PostFrom
@@ -99,10 +155,8 @@ class CategorySubscribe(LoginRequiredMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
-        # Удаляем старые подписки пользователя
         UserSubscribes.objects.filter(user=self.request.user).delete()
 
-        # Добавляем новые подписки
         for category in form.cleaned_data['categories']:
             UserSubscribes.objects.create(
                 user=self.request.user,
