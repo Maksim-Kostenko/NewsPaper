@@ -62,7 +62,7 @@ class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
 
     def form_valid(self, form):
         posts_today = Post.objects.filter(
-            author=self.request.user.author,t
+            author=self.request.user.author,
             date_created__date=date.today()
         )
 
