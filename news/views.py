@@ -5,10 +5,11 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-from news.forms import PostFrom, SubscribeForm
+from news.forms import PostForm, SubscribeForm
 from news.models import Post, UserSubscribes, Category
 from news.filters import NewsFilter
 
+from datetime import date
 
 # Create your views here.
 
@@ -55,11 +56,24 @@ class TypePostMixin:
             return Post.NEWS
 
 class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
-    form_class = PostFrom
+    form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
     def form_valid(self, form):
+        posts_today = Post.objects.filter(
+            author=self.request.user.author,t
+            date_created__date=date.today()
+        )
+
+        if posts_today.count() >= 3:
+            #todo 1: Сделать переменную под ограничение кол-ва записей, протестить!
+            #todo 2: Скорректировать html под вывод ошибки!, прочитать ({{ form.non_field_errors }}) или подумать над другим способом реализации
+            #todo 3: Скорректировать success_url
+
+            form.add_error(None, f'{self.request.user.username}, вы уже создали 3 поста сегодня. Попробуйте завтра.')
+            return self.form_invalid(form)
+
         post = form.save(commit=False)
         post.author = self.request.user.author
         post.type_post = self.get_post_type()
@@ -82,12 +96,10 @@ class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
 
         return super().form_valid(form)
 
-
     def send_notification_email(self, user, post, category):
 
         subject = f'Новая новость в категории "{category.name_category}"'
 
-        # Добавляем plain-text версию
         text_content = f"""
         Здравствуйте, {user.username}!
 

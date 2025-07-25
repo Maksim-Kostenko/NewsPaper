@@ -3,7 +3,7 @@ from django import forms
 from news.models import Post, Category
 
 
-class PostFrom(forms.ModelForm):
+class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'category']
