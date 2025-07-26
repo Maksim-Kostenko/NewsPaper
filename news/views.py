@@ -67,9 +67,7 @@ class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
         )
 
         if posts_today.count() >= 3:
-            #todo 1: Сделать переменную под ограничение кол-ва записей, протестить!
-            #todo 2: Скорректировать html под вывод ошибки!, прочитать ({{ form.non_field_errors }}) или подумать над другим способом реализации
-            #todo 3: Скорректировать success_url
+            #todo 1: Сделать переменную под ограничение кол-ва записей, протестить?
 
             form.add_error(None, f'{self.request.user.username}, вы уже создали 3 поста сегодня. Попробуйте завтра.')
             return self.form_invalid(form)
@@ -132,7 +130,7 @@ class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
         msg.send(fail_silently=False)
 
 class PostUpdate(LoginRequiredMixin, UpdateView, TypePostMixin):
-    form_class = PostFrom
+    form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
     login_url = 'news_list'

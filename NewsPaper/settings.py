@@ -150,6 +150,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+# task 1: Скорректировать остальной проект, добавив ссылку везде на DEFAULT_FROM_EMAIL, для более удобного внесения изменений,
+# если это будет необходимо
 DEFAULT_FROM_EMAIL = 'totsamisamiy@yandex.ru'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465

@@ -1,16 +1,22 @@
 {% extends 'flatpages/default.html' %}
 
 {% block content %}
-	
-    {% if post.type_post == 'NW' %}
-    	<h1>Новость</h1>
-        {% else %}
-        <h1>Статья</h1>
+        
+    {% if form.non_field_errors %}
+        <div style="color: red; margin: 10px 0;">
+            {{ form.non_field_errors }}
+        </div>
+    {% else %}
+        {% if post.type_post == 'NW' %}
+            <h1>Новость</h1>
+            {% else %}
+            <h1>Статья</h1>
+        {% endif %}
+        <hr>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Save">
+        </form>
     {% endif %}
-    <hr>
-    <form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save">
-    </form>
 {% endblock content %}
