@@ -98,15 +98,15 @@ AUTH_USER_MODEL = 'auth.User'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    #с подтверждением электронной почты
-    # 'allauth.account.auth_backends.AuthenticationBackend',
+    # с подтверждением электронной почты
+    'allauth.account.auth_backends.AuthenticationBackend',
 
 ]
 
-ACCOUNT_LOGIN_METHODS = ['email']  # вход только по email
-ACCOUNT_SIGNUP_FIELDS = ['email','password1','password2']  # регистрация без username
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_FORMS = {'signup': 'sign.forms.BasicSignupForm'}
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 SOCIAL_AUTH_YANDEX_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/accounts/yandex/login/callback/'
 
 # Database

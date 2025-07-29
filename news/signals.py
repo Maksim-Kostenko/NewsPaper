@@ -24,25 +24,20 @@ def new_post_sub_notification(instance, created, **kwargs):
                 recipient_list=[subscribe.user.email],
                 fail_silently=False,
             )
-#todo 4: Подумать над реализацией данного метода с помощью allauth методов! Посмотреть
-# исходный код DefaultAccountAdapter (отнаследоваться и просто не много добавить логики или полностью переопределить работу данного метода или
-# просто создать HTML, который будет отправлятсья клиенту)
-#
-# @receiver(post_save, sender=User)
-# def hello_user_notification(instance,created,  **kwargs):
-#     """Для отправки писем, можно использовать в том случае, если отказаться от
-#     использования allauth в своем проекте, поэтому на данном этапе закоментил
-#     Смотреть реализациб в adapter.py"""
-#     if created:
-#         username = instance.username
-#         email = instance.email
-#         subject = f'{username}, добро пожаловать на сайт!'
-#         message = f'Приятного чтения новостей!'
-#         send_mail(
-#             subject=subject,
-#             message=message,
-#             from_email='totsamisamiy@yandex.ru',
-#             recipient_list=email,
-#             fail_silently=False
-#         )
+
+
+@receiver(post_save, sender=User)
+def hello_user_notification(instance,created,  **kwargs):
+    if created:
+        username = instance.username
+        email = instance.email
+        subject = f'{username}, добро пожаловать на сайт!'
+        message = f'Приятного чтения новостей!'
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email='totsamisamiy@yandex.ru',
+            recipient_list=email,
+            fail_silently=False
+        )
 
