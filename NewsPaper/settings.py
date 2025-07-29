@@ -106,7 +106,10 @@ AUTHENTICATION_BACKENDS = [
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = None  # Куда перенаправлять после подтверждения
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = None      # Куда перенаправлять неавторизованных
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3                    # Срок действия ссылки
 SOCIAL_AUTH_YANDEX_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/accounts/yandex/login/callback/'
 
 # Database

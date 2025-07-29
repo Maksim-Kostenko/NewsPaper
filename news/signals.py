@@ -1,7 +1,7 @@
 from django.core.mail import send_mail
 
 from news.models import PostCategory, UserSubscribes
-from django.contrib.auth.models import User
+from allauth.account.signals import email_confirmed
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -26,18 +26,16 @@ def new_post_sub_notification(instance, created, **kwargs):
             )
 
 
-@receiver(post_save, sender=User)
-def hello_user_notification(instance,created,  **kwargs):
-    if created:
-        username = instance.username
-        email = instance.email
-        subject = f'{username}, добро пожаловать на сайт!'
-        message = f'Приятного чтения новостей!'
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email='totsamisamiy@yandex.ru',
-            recipient_list=email,
-            fail_silently=False
-        )
+@receiver(email_confirmed)
+def hello_user_notification(request, email_address, **kwargs):
+    user = email_address.user
+    subject = f'{user.username}, добро пожаловать на сайт!'
+    message = f'Ваш email подтвержден! Приятного чтения новостей!'
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email='totsamisamiy@yandex.ru',
+        recipient_list=[user.email],
+        fail_silently=False
+    )
 

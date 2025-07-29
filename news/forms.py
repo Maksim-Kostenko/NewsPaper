@@ -10,10 +10,9 @@ class PostForm(forms.ModelForm):
 
 class SubscribeForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # Получаем пользователя из kwargs
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Настраиваем queryset для выбора категорий
         self.fields['categories'] = forms.ModelMultipleChoiceField(
             queryset=Category.objects.all(),
             widget=forms.CheckboxSelectMultiple,
