@@ -19,5 +19,5 @@ urlpatterns = [
     path('article/<int:pk>/update/', PostUpdate.as_view(), name='article_update'),
     path('article/<int:pk>/delete', PostDelete.as_view(), name='article_delete'),
 
-    path('subscribe/', CategorySubscribe.as_view(), name = 'category_subscribe')
+    path('subscribe/', CategorySubscribe.as_view(), name = 'category_subscribe') #Для реализации подписок на категорию новостей
 ]

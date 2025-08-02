@@ -152,6 +152,9 @@ class PostDelete(LoginRequiredMixin, DeleteView, TypePostMixin):
         return Post.objects.filter(type_post=self.get_post_type())
 
 class CategorySubscribe(LoginRequiredMixin, FormView):
+    """
+    Возможность подписок на разные категории новостей
+    """
     form_class = SubscribeForm
     model = Category
     template_name = 'category_subscribe.html'
@@ -159,12 +162,13 @@ class CategorySubscribe(LoginRequiredMixin, FormView):
     success_url = reverse_lazy('news_list')
 
     def get_form_kwargs(self):
-        """Передаем пользователя в форму"""
+        """Передаем пользователя в форму (для получения действующих подписок пользователя)"""
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
     def form_valid(self, form):
+        """Создания подписок на категории"""
         UserSubscribes.objects.filter(user=self.request.user).delete()
 
         for category in form.cleaned_data['categories']:

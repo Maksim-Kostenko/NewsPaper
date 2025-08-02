@@ -19,7 +19,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
 @login_required
 def upgrade_author(request):
     user = request.user
-    premium_group = Group.objects.get(name='author')
+    premium_group, created  = Group.objects.get_or_create(name='author')
     if not request.user.groups.filter(name='author').exists():
         premium_group.user_set.add(user)
         if not Author.objects.filter(user=user).exists():

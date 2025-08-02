@@ -46,7 +46,7 @@ def _add_user_to_common_group(user):
     # дальнейшем разобраться почему не найдена данная группа, плюс оповещение администраторов
 
     try:
-        common_group = Group.objects.get(name='common')
+        common_group, created = Group.objects.get_or_create(name='common')
         if not user.groups.filter(name='common').exists():
             #Делается доп проверка
             common_group.user_set.add(user)

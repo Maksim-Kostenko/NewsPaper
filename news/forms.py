@@ -13,6 +13,7 @@ class SubscribeForm(forms.Form):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
+        #Получаем и передаем необходимые подписки
         self.fields['categories'] = forms.ModelMultipleChoiceField(
             queryset=Category.objects.all(),
             widget=forms.CheckboxSelectMultiple,

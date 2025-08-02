@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Новые статьи</title>
+</head>
+<body>
+    <h2>Здравствуйте, {{ user.username }}!</h2>
+    <p>В категории <strong>{{ category.name_category }}</strong> появились новые статьи:</p>
+    
+    <ul>
+    {% for article in articles %}
+        <li>
+            <h3><a href="{{ SITE_URL }}{{ article.get_absolute_url }}">{{ article.title }}</a></h3>
+            <p>{{ article.preview }}</p>
+            <small>Опубликовано: {{ article.date_created|date:"d.m.Y H:i" }}</small>
+        </li>
+    {% endfor %}
+    </ul>
+    
+    <p>Хорошего дня!</p>
+    <p>Команда {{ SITE_URL }}</p>
+</body>
+</html>

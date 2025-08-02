@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
+SITE_URL = 'http://localhost:8000/'
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
