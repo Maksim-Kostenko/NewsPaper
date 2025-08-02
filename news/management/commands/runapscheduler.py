@@ -1,6 +1,5 @@
 import logging
 
-from apscheduler.triggers.interval import IntervalTrigger
 from django.conf import settings
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -12,7 +11,7 @@ from django.template.loader import render_to_string
 from datetime import timedelta
 from django.utils import timezone
 from django.contrib.auth.models import User
-from news.models import Post, Category, UserSubscribes  # Импортируем ваши модели
+from news.models import Post, Category, UserSubscribes
 
 logger = logging.getLogger(__name__)
 
