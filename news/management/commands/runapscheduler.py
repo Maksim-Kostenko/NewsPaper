@@ -39,7 +39,6 @@ def send_weekly_articles():
         for subscription in subscribers:
             user = subscription.user
 
-            # Формируем и отправляем письмо
             subject = f"Новые статьи в категории {category.name_category}"
             html_message = render_to_string('weekly_articles.html', {
                 'user': user,
