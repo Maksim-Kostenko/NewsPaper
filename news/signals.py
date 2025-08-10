@@ -1,5 +1,5 @@
-from news.models import PostCategory, UserSubscribes
-from news.tasks import new_post_sub_notification
+from news.models import PostCategory, UserSubscribes, Post
+from news.tasks import new_post_sub_notification, hello
 
 from django.core.mail import send_mail
 from django.contrib.auth.models import Group
@@ -9,11 +9,15 @@ from allauth.account.signals import email_confirmed
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+import logging
+logger = logging.getLogger(__name__)
 
-@receiver(post_save, sender=PostCategory)
-def news_created(instance, created):
+@receiver(post_save, sender=Post)
+def news_created(instance, created, **kwargs):
     if created:
+        hello.delay()
         new_post_sub_notification.delay(instance.id)
+
 
     # if created:
     #     post = instance.post

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -180,8 +180,28 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CELERY_BROKER_URL = 'redis://:qh1qVBw8IaPuhJXnzHCZLXfQzJxNAojC@redis-17948.c14.us-east-1-2.ec2.redns.redis-cloud.com:17948'
-CELERY_RESULT_BACKEND = 'redis://:qh1qVBw8IaPuhJXnzHCZLXfQzJxNAojC@redis-17948.c14.us-east-1-2.ec2.redns.redis-cloud.com:17948'
+CELERY_BROKER_URL = 'redis://host.docker.internal:6379/0'
+CELERY_RESULT_BACKEND = 'redis://host.docker.internal:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+CELERY_WORKER_HIJACK_ROOT_LOGGER = False
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        },
+    },
+    'loggers': {
+        'news': {  # имя вашего приложения
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    }
+}

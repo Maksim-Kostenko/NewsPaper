@@ -66,7 +66,7 @@ class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
             date_created__date=date.today()
         )
 
-        if posts_today.count() >= 3:
+        if posts_today.count() >= 333:
 
             form.add_error(None, f'{self.request.user.username}, вы уже создали 3 поста сегодня. Попробуйте завтра.')
             return self.form_invalid(form)

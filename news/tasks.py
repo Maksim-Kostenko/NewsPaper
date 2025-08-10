@@ -1,3 +1,5 @@
+import time
+
 from celery import shared_task
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mass_mail
@@ -9,12 +11,18 @@ from news.models import *
 logger = logging.getLogger(__name__)
 
 
-@shared_task(bind=True, max_retries=3)  # Добавляем bind=True для self.retry
+@shared_task
+def hello():
+    time.sleep(10)
+    print("Hello, world!")
+
+@shared_task(bind=True, max_retries=3)
 def new_post_sub_notification(self, pk):
+    """ИСправить получение почты!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
     try:
         # 1. Получаем пост и подписчиков
         post = Post.objects.select_related('category').only(
-            'title', 'text', 'category__name_category'
+            'title', 'category__name_category'
         ).get(pk=pk)
 
         subscribers = UserSubscribes.objects.filter(
