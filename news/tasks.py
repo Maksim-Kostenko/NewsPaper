@@ -2,7 +2,7 @@ import time
 
 from celery import shared_task
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mass_mail
+from django.core.mail import send_mass_mail, send_mail
 from django.conf import settings
 import logging
 
@@ -26,7 +26,7 @@ def new_post_sub_notification(self, pk):
         ).get(pk=pk)
 
         subscribers = UserSubscribes.objects.filter(
-            category=post.category
+            category__in=post.category.all()
         ).select_related('user').only('user__email')
 
         if not subscribers.exists():
@@ -37,15 +37,18 @@ def new_post_sub_notification(self, pk):
         subject = f'Новый пост в категории "{post.category.name_category}"'
         message = f'Заголовок: {post.title}\n\n{post.preview()}\n\nЧитать полностью: {post.get_absolute_url()}'
 
-        messages = [
-            (subject, message, settings.DEFAULT_FROM_EMAIL, [sub.user.email])
-            for sub in subscribers
-        ]
+        emails = list({sub.user.email for sub in subscribers if sub.user.email})
 
         # 3. Отправляем
         try:
-            send_mass_mail(messages, fail_silently=False)
-            logger.info(f"Successfully sent {len(messages)} emails for post {pk}")
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=emails,
+                fail_silently=False
+            )
+            logger.info(f"Sent to {len(emails)} subscribers")
         except Exception as e:
             logger.error(f"Email sending failed for post {pk}: {str(e)}")
             raise  # Повторяем всю задачу
