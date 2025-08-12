@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 
 @shared_task(bind=True, max_retries=3)
 def new_post_sub_notification(self, pk):
-    """ИСправить получение почты!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+    """ИСПРАВИТЬ, СДЕЛАТЬ ИСПОЛЬЗОВАНИЕ HTML
+    """
     try:
         # 1. Получаем пост и подписчиков
         post = Post.objects.prefetch_related(
