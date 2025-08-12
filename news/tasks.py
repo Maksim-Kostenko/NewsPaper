@@ -13,11 +13,6 @@ from news.models import *
 logger = logging.getLogger(__name__)
 
 
-@shared_task
-def hello():
-    time.sleep(10)
-    print("Hello, world!")
-
 @shared_task(bind=True, max_retries=3)
 def new_post_sub_notification(self, pk):
     """ИСправить получение почты!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
@@ -39,7 +34,7 @@ def new_post_sub_notification(self, pk):
             return
 
         # 2. Формируем письма
-        subject = f'Новый пост в категории "{post.category.name_category}"'
+        subject = f'Новый пост в категории "{post.category.first().name_category}"'
         message = f'Заголовок: {post.title}\n\n{post.preview()}\n\nЧитать полностью: {post.get_absolute_url()}'
 
 

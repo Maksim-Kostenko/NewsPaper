@@ -66,7 +66,7 @@ class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
             date_created__date=date.today()
         )
 
-        if posts_today.count() >= 333:
+        if posts_today.count() >= 3:
 
             form.add_error(None, f'{self.request.user.username}, вы уже создали 3 поста сегодня. Попробуйте завтра.')
             return self.form_invalid(form)
@@ -79,54 +79,54 @@ class PostCreated(LoginRequiredMixin, CreateView, TypePostMixin):
         form.save_m2m()
         post_categories = post.category.all()
 
-        for category in post_categories:
-            subscribers = UserSubscribes.objects.filter(
-                category=category
-            ).select_related('user')
-
-            for subscription in subscribers:
-                self.send_notification_email(
-                    user=subscription.user,
-                    post=post,
-                    category=category
-                )
+        # for category in post_categories:
+        #     subscribers = UserSubscribes.objects.filter(
+        #         category=category
+        #     ).select_related('user')
+        #
+        #     for subscription in subscribers:
+        #         self.send_notification_email(
+        #             user=subscription.user,
+        #             post=post,
+        #             category=category
+        #         )
 
         return super().form_valid(form)
 
-    def send_notification_email(self, user, post, category):
-
-        subject = f'Новая новость в категории "{category.name_category}"'
-
-        text_content = f"""
-        Здравствуйте, {user.username}!
-
-        Новая новость в категории "{category.name_category}":
-        {post.title}
-
-        {post.content[:50]}...
-
-        Читать полностью: {post.get_absolute_url()}
-        """
-
-        html_content = render_to_string(
-            'new_post_notification.html',
-            {
-                'user': user,
-                'post': post,
-                'content': post.content[:50],
-                'category': category,
-                'site_name': 'Ваш сайт'
-            }
-        )
-
-        msg = EmailMultiAlternatives(
-            subject=subject,
-            body=text_content,
-            from_email='totsamisamiy@yandex.ru',
-            to=[user.email],
-        )
-        msg.attach_alternative(html_content, "text/html")
-        msg.send(fail_silently=False)
+    # def send_notification_email(self, user, post, category):
+    #
+    #     subject = f'Новая новость в категории "{category.name_category}"'
+    #
+    #     text_content = f"""
+    #     Здравствуйте, {user.username}!
+    #
+    #     Новая новость в категории "{category.name_category}":
+    #     {post.title}
+    #
+    #     {post.content[:50]}...
+    #
+    #     Читать полностью: {post.get_absolute_url()}
+    #     """
+    #
+    #     html_content = render_to_string(
+    #         'new_post_notification.html',
+    #         {
+    #             'user': user,
+    #             'post': post,
+    #             'content': post.content[:50],
+    #             'category': category,
+    #             'site_name': 'Ваш сайт'
+    #         }
+    #     )
+    #
+    #     msg = EmailMultiAlternatives(
+    #         subject=subject,
+    #         body=text_content,
+    #         from_email='totsamisamiy@yandex.ru',
+    #         to=[user.email],
+    #     )
+    #     msg.attach_alternative(html_content, "text/html")
+    #     msg.send(fail_silently=False)
 
 class PostUpdate(LoginRequiredMixin, UpdateView, TypePostMixin):
     form_class = PostForm
