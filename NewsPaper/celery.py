@@ -9,7 +9,7 @@ app.config_from_object('django.conf:settings', namespace = 'CELERY')
 app.conf.beat_schedule = {
     'send-weekly-digest': {
         'task': 'news.tasks.send_weekly_digest',
-        'schedule': crontab(hour=8, minute=0, day_of_week=1),  # Каждый понедельник в 8:00
+        'schedule': crontab(hour=8, minute=0, day_of_week=1),
     },
 }
 app.autodiscover_tasks()

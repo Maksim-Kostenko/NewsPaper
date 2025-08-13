@@ -46,8 +46,9 @@ def new_post_sub_notification(self, pk):
         first_category_name = categories.first().name_category
         all_categories = ", ".join([cat.name_category for cat in categories])
 
-        subject = f'Новый пост в категории "{first_category_name}"' if categories.count() > 1 \
-            else subject = f'Новый пост в категориях: {all_categories}'
+        subject = (f'Новый пост в категории "{first_category_name}"'
+                   if categories.count() == 1
+                   else f'Новый пост в категориях: {all_categories}')
 
 
         post_url = f"{settings.SITE_URL}{post.get_absolute_url()}"
