@@ -1,27 +1,30 @@
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
+{% load cache %}
 
 {% block title %}
 	News
 {% endblock title %}
 
 {% block content %}
-    <table class="table table-striped">
-        <tr>
-            <td>Заголовок</td>
-            <td>{{ post.title|censor }}</td>
-        </tr>
-        <tr>
-            <td>Дата публикации</td>
-            <td>{{ post.date_created|date:"d.m.Y" }}</td>
-        </tr>
-        <tr>
-            <td>Содержание</td>
-            <td>{{ post.content|censor }}</td>
-        </tr>
-        <tr>
-            <td>Тип поста</td>
-            <td>{{ post.get_type_post_display }}</td>
-        </tr>
-    </table>
+    {% cache 300 news_detail post.id %}
+        <table class="table table-striped">
+            <tr>
+                <td>Заголовок</td>
+                <td>{{ post.title|censor }}</td>
+            </tr>
+            <tr>
+                <td>Дата публикации</td>
+                <td>{{ post.date_created|date:"d.m.Y" }}</td>
+            </tr>
+            <tr>
+                <td>Содержание</td>
+                <td>{{ post.content|censor }}</td>
+            </tr>
+            <tr>
+                <td>Тип поста</td>
+                <td>{{ post.get_type_post_display }}</td>
+            </tr>
+        </table>
+    {% endcache %}
 {% endblock content %}

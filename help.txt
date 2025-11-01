@@ -1,0 +1,8 @@
+1. celery
+celery -A NewsPapera worker --pool=solo -l INFO
+
+2. flower
+celery -A NewsPaper --broker=redis://127.0.0.1:6379/0 flower --por=5555
+
+lsof -i :5555
+kill -9 PID

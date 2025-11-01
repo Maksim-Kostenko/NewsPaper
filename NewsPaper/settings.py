@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os.path
 import sys
 from pathlib import Path
 
@@ -180,8 +181,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CELERY_BROKER_URL = 'redis://host.docker.internal:6379/0'
-CELERY_RESULT_BACKEND = 'redis://host.docker.internal:6379/0'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -190,18 +191,142 @@ CELERY_WORKER_HIJACK_ROOT_LOGGER = False
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'console_debug': {
+            'format': '{asctime} - {levelname} - {message}',
+            'style': '{',
+        },
+        'console_warning': {
+            'format': '{asctime} - {levelname} - {pathname} - {message}',
+            'style': '{',
+        },
+        'console_error': {
+            'format': '{asctime} - {levelname} - {pathname} - {message}\n{exc_info}',
+            'style': '{',
+        },
+        'general_file': {
+            'format': '{asctime} - {levelname} - {module} - {message}',
+            'style': '{',
+        },
+        'error_file': {
+            'format': '{asctime} - {levelname} - {message} - {pathname}\n{exc_info}',
+            'style': '{',
+        },
+        'security_file': {
+            'format': '{asctime} - {levelname} - {module} - {message}',
+            'style': '{',
+        },
+        'email': {
+            'format': '{asctime} - {levelname} - {message} - {pathname}',  # Как errors.log без стэка
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
     'handlers': {
-        'console': {
+        'console_debug': {
             'level': 'DEBUG',
+            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
+            'formatter': 'console_debug',
+        },
+        'console_warning': {
+            'level': 'WARNING',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_warning',
+        },
+        'console_error': {
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_error',
+        },
+        'general_file': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/general.log',
+            'formatter': 'general_file',
+        },
+        'errors_file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/errors.log',
+            'formatter': 'error_file',
+        },
+        'security_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/security.log',
+            'formatter': 'security_file',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'email',
         },
     },
     'loggers': {
-        'news': {  # имя вашего приложения
-            'handlers': ['console'],
+        # Основной логгер Django - ТОЛЬКО в консоль и general.log
+        'django': {
+            'handlers': ['console_debug', 'console_warning', 'console_error', 'general_file'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
+
+        # Специфичные логгеры для errors.log
+        'django.request': {
+            'handlers': ['errors_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['errors_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': ['errors_file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['errors_file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+
+        # Логгер безопасности
+        'django.security': {
+            'handlers': ['security_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+
+        # Ваше приложение
+        'news': {
+            'handlers': ['console_debug', 'console_warning', 'console_error', 'general_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",  # Порт 6380, БД №0
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "myapp",
     }
 }

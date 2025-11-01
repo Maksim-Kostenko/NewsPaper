@@ -1,6 +1,7 @@
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
+{% load cache %}
 
 {% block title %}
     Список новостей
@@ -8,6 +9,7 @@
 {% endblock title %}
 
 {% block content %}
+    {% cache 300 "news_list" page_obj.number %}
     <h1>Список новостей</h1>
         <hr>
     {% if news %}
@@ -32,6 +34,8 @@
     {% else %}
         <h2>Новостей нет</h2>
     {% endif %}
+    {% endcache %}
+
    {% if page_obj.has_previous %}
        {# Для каждой ссылки пагинации указываем обработку через новый тег #}
        <a href="?{% url_replace page=1 %}">1</a>
